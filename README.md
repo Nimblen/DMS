@@ -42,58 +42,58 @@ This project is a web application for managing documents within an organization.
 1. **Clone the repository:**
 
 
-# Clone the repository
+### Clone the repository
    ```bash
     git clone https://github.com/nimblen/DMS.git
     cd DMS
    ```
 
-# Create and activate a virtual environment
-    ```bash
+### Create and activate a virtual environment
+  ```bash
     python -m venv venv
-    ```
-    ```bash
+  ```
+  ```bash
     source venv/bin/activate  # For Linux/Mac
-    ```
-    ```bash
+  ```
+  ```bash
     venv\Scripts\activate  # For Windows
-    ```
+  ```
 
-# Install dependencies
-   ```bash
+### Install dependencies
+  ```bash
     pip install -r requirements.txt
-   ```
+  ```
 
-# Apply database migrations
-    ```bash
+### Apply database migrations
+  ```bash
     python manage.py migrate
-    ```
-# Create a superuser
+  ```
+### Create a superuser
    ```bash
     python manage.py createsuperuser
    ```
-# Run the development server
-    ```bash
+### Run the development server
+  ```bash
     daphne -p 8000 config.asgi:application
-    ```
+  ```
 
 # Additional steps
 # Ensure Redis is running on your machine or server
 # Create database and user if they don't exist
 
-# Collect static files if needed
-    ```bash
+### Collect static files if needed
+  ```bash
     python manage.py collectstatic
-    ```
+  ```
 
-# Usage
-# Admin panel: Accessible at http://localhost:8000/admin/
-# Main application: Accessible at http://localhost:8000/
+## Usage
+### Admin panel: Accessible at http://localhost:8000/admin/
+### Main application: Accessible at http://localhost:8000/
 
-# Project structure
-# config/: Project settings, routes, and ASGI configuration
-# users/: User management and authentication application
-# documents/: Document management application
-# notifications/: Notification system
-# templates/: HTML templates
-# static/: Static files (CSS, JS, images)
+### Project structure
+### config/: Project settings, routes, and ASGI configuration
+### users/: User management and authentication application
+### documents/: Document management application
+### notifications/: Notification system
+### templates/: HTML templates
+### static/: Static files (CSS, JS, images)
