@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Система управления документами{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<style>
+    .alert-success { color: green; }
+    .alert-error { color: red; }
+</style>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {% autoescape off %}{{ message }}{% endautoescape %}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        {% if user.is_authenticated %}
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            const notificationSocket = new WebSocket(
+                wsProtocol + '://' + window.location.host + '/ws/notifications/'
+            );
+
+            notificationSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                alert(data.message);
+            };
+
+            notificationSocket.onclose = function(e) {
+                console.error('WebSocket закрыт неожиданно');
+            };
+        {% endif %}
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

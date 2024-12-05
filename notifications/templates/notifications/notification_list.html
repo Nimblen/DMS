@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои уведомления{% endblock %}
+
+{% block content %}
+<h2>Мои уведомления</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary mb-3">Отметить все как прочитанные</button>
+</form>
+<ul class="list-group">
+    {% for notification in notifications %}
+    <li class="list-group-item {% if not notification.is_read %}list-group-item-warning{% endif %}">
+        {{ notification.message }} - {{ notification.created_at|date:"d.m.Y H:i" }}
+    </li>
+    {% empty %}
+    <li class="list-group-item">У вас нет уведомлений.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

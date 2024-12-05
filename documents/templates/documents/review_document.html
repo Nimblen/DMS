@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Просмотр документа{% endblock %}
+
+{% block content %}
+<h2>Просмотр документа</h2>
+<p><strong>ID:</strong> {{ object.id }}</p>
+<p><strong>Сотрудник:</strong> {{ object.employee.username }}</p>
+<p><strong>Тип документа:</strong> {{ object.document_type }}</p>
+<p><strong>МФО банка:</strong> {{ object.mfo }}</p>
+<p><strong>Сообщение:</strong> {{ object.message }}</p>
+<p><strong>Файл:</strong> <a href="{{ object.pdf_file.url }}">Скачать PDF</a></p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="action" value="accept" class="btn btn-success">Принять</button>
+    <button type="submit" name="action" value="reject" class="btn btn-danger">Отклонить</button>
+</form>
+{% endblock %}

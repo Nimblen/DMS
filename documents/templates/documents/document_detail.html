@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Детали документа{% endblock %}
+
+{% block content %}
+<h2>Детали документа</h2>
+<p><strong>ID:</strong> {{ document.id }}</p>
+<p><strong>Сотрудник:</strong> {{ document.employee.username }}</p>
+<p><strong>Тип документа:</strong> {{ document.document_type }}</p>
+<p><strong>МФО банка:</strong> {{ document.mfo }}</p>
+<p><strong>Сообщение:</strong> {{ document.message }}</p>
+<p><strong>Статус:</strong> {{ document.get_status_display }}</p>
+<p><strong>Файл:</strong> <a href="{{ document.pdf_file.url }}">Скачать PDF</a></p>
+{% endblock %}

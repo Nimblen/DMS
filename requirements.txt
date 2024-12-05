@@ -1,0 +1,9 @@
+Django==4.2
+channels>=3.0
+channels-redis>=3.2
+psycopg2-binary
+django-crispy-forms
+cryptography==44.0.0
+crispy-bootstrap4
+python-magic-bin==0.4.14
+daphne==4.0.0    

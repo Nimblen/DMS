@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои документы{% endblock %}
+
+{% block content %}
+<h2>Мои документы</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Тип документа</th>
+            <th>Дата создания</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for document in documents %}
+        <tr>
+            <td>{{ document.id }}</td>
+            <td>{{ document.document_type }}</td>
+            <td>{{ document.created_at|date:"d.m.Y H:i" }}</td>
+            <td>{{ document.get_status_display }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Вы еще не загрузили ни одного документа.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% include 'pagination.html' with page_obj=page_obj %}
+{% endblock %}

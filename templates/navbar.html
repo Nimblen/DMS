@@ -1,0 +1,65 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'index' %}">Система управления документами</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        {% if user.is_authenticated %}
+        <ul class="navbar-nav mr-auto">
+            {% if user.is_employee %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'documents:upload_document' %}">Загрузить документ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'documents:employee_documents' %}">Мои документы</a>
+            </li>
+            {% elif user.is_manager %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'documents:manager_documents' %}">Документы сотрудников</a>
+            </li>
+            {% elif user.is_assistant %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'documents:assistant_documents' %}">Документы на рассмотрении</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:request_role' %}">Запросить изменение роли</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <!-- Ссылка на уведомления -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'notifications:notification_list' %}">
+                    Уведомления
+                    {% if unread_notifications_count > 0 %}
+                        <span class="badge badge-danger">{{ unread_notifications_count }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <!-- Ссылка на профиль пользователя -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ user.username }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a>
+                    {% if user.is_superuser %}
+                    <a class="dropdown-item" href="{% url 'admin:index' %}">Админ-панель</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'users:logout' %}">Выход</a>
+                </div>
+            </li>
+        </ul>
+        {% else %}
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:login' %}">Вход</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
+            </li>
+        </ul>
+        {% endif %}
+    </div>
+</nav>
