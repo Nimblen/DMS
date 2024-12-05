@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import RoleRequest, User
+from users.models import RoleRequest, User
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -9,11 +9,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2')
 
-
-class UserRoleForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['role']
 
 
 

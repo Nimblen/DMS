@@ -1,11 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic import CreateView, TemplateView, UpdateView
+from django.views.generic import CreateView, TemplateView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from users.models import RoleRequest, User
-from users.forms import UserRoleForm
-from .forms import CustomUserCreationForm, RoleRequestForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from users.models import RoleRequest
+from users.forms import CustomUserCreationForm, RoleRequestForm
 
 
 class UserRegisterView(CreateView):
@@ -26,24 +25,15 @@ class UserProfileView(LoginRequiredMixin, TemplateView):
     template_name = "users/profile.html"
 
 
-class UserRoleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = User
-    form_class = UserRoleForm
-    template_name = "users/update_role.html"
-    success_url = reverse_lazy("users:user_list")
-
-    def test_func(self):
-        return self.request.user.is_superuser
-
-
 class RoleRequestCreateView(LoginRequiredMixin, CreateView):
     """
     View for creating a role request.
 
     This view handles the creation of a role request by the user.
-    It requires the user to be logged in and checks for any existing 
+    It requires the user to be logged in and checks for any existing
     pending requests before allowing a new one to be created.
     """
+
     model = RoleRequest
     form_class = RoleRequestForm
     template_name = "users/role_request_form.html"
@@ -86,9 +76,8 @@ class RoleRequestCreateView(LoginRequiredMixin, CreateView):
                 "Вы уже отправили запрос на изменение роли, который ожидает рассмотрения.",
             )
             return self.form_invalid(form)
-        
+
         # Assign the current user to the role request
         form.instance.user = self.request.user
         messages.success(self.request, "Ваш запрос на изменение роли отправлен.")
         return super().form_valid(form)
-
