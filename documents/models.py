@@ -42,3 +42,6 @@ class Document(models.Model):
         indexes = [
             models.Index(fields=["status", "assigned_to"]),
         ]
+
+    def __str__(self):
+        return f"{self.employee} - {self.status}"
