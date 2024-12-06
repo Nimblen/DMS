@@ -35,7 +35,7 @@ class CustomUserAdmin(UserAdmin):
                 )
             },
         ),
-        ("Важные даты", {"fields": ("last_login", "date_joined", "is_online")}),
+        ("Важные даты", {"fields": ("last_login",)}),
     )
 
     add_fieldsets = (
