@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Список Пользователей</h1>
+  
+
+  <form method="get" class="form-inline mb-3">
+      <input type="text" name="q" class="form-control mr-2" placeholder="Поиск..." value="{{ request.GET.q }}">
+      <select name="ordering" class="form-control mr-2">
+          <option value="username" {% if request.GET.ordering == 'username' %}selected{% endif %}>Имя пользователя (A-Z)</option>
+          <option value="-username" {% if request.GET.ordering == '-username' %}selected{% endif %}>Имя пользователя (Z-A)</option>
+          <option value="email" {% if request.GET.ordering == 'email' %}selected{% endif %}>Email (A-Z)</option>
+          <option value="-email" {% if request.GET.ordering == '-email' %}selected{% endif %}>Email (Z-A)</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Применить</button>
+  </form>
+
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th>ID</th>
+              <th>Имя пользователя</th>
+              <th>Email</th>
+              <th>Должность</th>
+              <th>Статус</th>
+          </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+            <tr data-user-id="{{ user.id }}">
+                <td>{{ user.id }}</td>
+                <td><a href="{% url 'users:user_detail' user.pk %}">{{ user.username }}</a></td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td class="user-status">
+                    {% if user.status.is_online %}
+                        <span class="badge badge-success">Онлайн</span>
+                    {% else %}
+                        <span class="badge badge-secondary">Офлайн</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">Пользователей не найдено.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+
+  <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+          {% if users.has_previous %}
+              <li class="page-item">
+                  <a class="page-link" href="?page={{ users.previous_page_number }}&q={{ request.GET.q }}&ordering={{ request.GET.ordering }}" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                  </a>
+              </li>
+          {% else %}
+              <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                  </a>
+              </li>
+          {% endif %}
+
+          {% for num in users.paginator.page_range %}
+              {% if users.number == num %}
+                  <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+              {% else %}
+                  <li class="page-item"><a class="page-link" href="?page={{ num }}&q={{ request.GET.q }}&ordering={{ request.GET.ordering }}">{{ num }}</a></li>
+              {% endif %}
+          {% endfor %}
+
+          {% if users.has_next %}
+              <li class="page-item">
+                  <a class="page-link" href="?page={{ users.next_page_number }}&q={{ request.GET.q }}&ordering={{ request.GET.ordering }}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                  </a>
+              </li>
+          {% else %}
+              <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                  </a>
+              </li>
+          {% endif %}
+      </ul>
+  </nav>
+{% endblock %}

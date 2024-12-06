@@ -25,3 +25,9 @@ class RoleRequestForm(forms.ModelForm):
         super(RoleRequestForm, self).__init__(*args, **kwargs)
         ROLE_CHOICES = [choice for choice in User.ROLE_CHOICES if choice[0] != self.user.role]
         self.fields['requested_role'].choices = ROLE_CHOICES
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['avatar', 'username', 'email']

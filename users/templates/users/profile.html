@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Профиль{% endblock %}
 
 {% block content %}
 <h2>Профиль пользователя</h2>
+{% if user.avatar %}
+<img src="{{ user.avatar.url }}" alt="Аватар" class="img-thumbnail" width="150">
+{% else %}
+<img src="{% static 'images/default_avatar.png' %}" alt="Аватар" class="img-thumbnail" width="150">
+{% endif %}
+
 <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
 <p><strong>Email:</strong> {{ user.email }}</p>
 <p><strong>Роль:</strong> {{ user.get_role_display }}</p>
+<a href="{% url 'users:edit_profile' %}" class="btn btn-primary">Редактировать профиль</a>
 {% endblock %}

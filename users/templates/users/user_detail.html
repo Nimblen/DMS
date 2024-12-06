@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <h1>Профиль Пользователя: {{ user_detail.username }}</h1>
+  <p><strong>Email:</strong> {{ user_detail.email }}</p>
+  <p><strong>Должность:</strong> {{ user_detail.role }}</p>
+  
+  {% if user_detail.avatar %}
+      <img src="{{ user_detail.avatar.url }}" alt="Аватар" class="img-thumbnail" width="150">
+  {% else %}
+      <img src="{% static 'images/default_avatar.png' %}" alt="Аватар" class="img-thumbnail" width="150">
+  {% endif %}
+
+  <p><strong>Статус:</strong>
+    <span id="status-indicator">
+        {% if user_detail.status.is_online %}
+            <span class="badge badge-success">Онлайн</span>
+        {% else %}
+            <span class="badge badge-secondary">Офлайн</span>
+        {% endif %}
+    </span>
+</p>
+
+
+{% endblock %}

@@ -14,6 +14,7 @@ class User(AbstractUser):
     ]
 
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=ROLE_EMPLOYEE)
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
 
     def is_employee(self):
         return self.role == self.ROLE_EMPLOYEE
@@ -35,3 +36,12 @@ class RoleRequest(models.Model):
         return (
             f"Запрос роли '{self.get_requested_role_display()}' от {self.user.username}"
         )
+
+
+class UserStatus(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="status")
+    is_online = models.BooleanField(default=False)
+    last_seen = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {'Онлайн' if self.is_online else 'Офлайн'}"

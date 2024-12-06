@@ -25,6 +25,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'users:request_role' %}">Запросить изменение роли</a>
             </li>
+            {% if user.is_manager or user.is_superuser %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:user_list' %}">Сотрудники</a>
+            </li>
+            {% endif %}
         </ul>
         <ul class="navbar-nav ml-auto">
             <!-- Ссылка на уведомления -->
