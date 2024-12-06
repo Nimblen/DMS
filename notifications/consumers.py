@@ -13,13 +13,14 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         Updates the user's online status in the database.
         """
         self.user_id = self.scope["user"].id
-
         if self.scope["user"].is_anonymous:
             await self.close()
         else:
             # Add user to WebSocket group
+            self.group_name = f"notifications_{self.user_id}"
+
             await self.channel_layer.group_add(
-                "notifications",
+                self.group_name,
                 self.channel_name
             )
             await self.accept()

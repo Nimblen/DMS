@@ -33,7 +33,7 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.role }}</td>
                 <td class="user-status">
-                    {% if user.status.is_online %}
+                    {% if user.is_online %}
                         <span class="badge badge-success">Онлайн</span>
                     {% else %}
                         <span class="badge badge-secondary">Офлайн</span>
