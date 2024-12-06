@@ -5,5 +5,5 @@ psycopg2-binary
 django-crispy-forms
 cryptography==44.0.0
 crispy-bootstrap4
-python-magic-bin==0.4.14
+python-magic
 daphne==4.0.0    
