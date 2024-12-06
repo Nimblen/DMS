@@ -7,3 +7,4 @@ cryptography==44.0.0
 crispy-bootstrap4
 python-magic
 daphne==4.0.0    
+pillow
