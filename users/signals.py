@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from users.models import RoleRequest, User
+from users.models import RoleRequest, User, UserStatus
 from notifications.utils import NotificationService
 
 
