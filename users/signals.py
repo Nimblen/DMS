@@ -64,7 +64,7 @@ def notify_user_on_role_request_update(sender, instance, **kwargs):
 @receiver(post_save, sender=User)
 def create_user_status(sender, instance, created, **kwargs):
     if created:
-        UserStatus.objects.create(user=instance)
+        UserStatus.objects.get_or_create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_status(sender, instance, **kwargs):

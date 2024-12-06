@@ -1,4 +1,3 @@
-from asgiref.sync import async_to_sync
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import CreateView, TemplateView, ListView, UpdateView
@@ -6,8 +5,6 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.contrib.auth.mixins import UserPassesTestMixin
-from redis.asyncio import Redis
-from users.mixins import RedisStatusMixin
 from users.models import RoleRequest, User
 from users.forms import CustomUserCreationForm, RoleRequestForm, UserProfileForm
 

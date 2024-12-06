@@ -80,7 +80,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         from asgiref.sync import sync_to_async
 
         @sync_to_async
-        def update_status():
-            UserStatus.objects.filter(user_id=user_id).update(is_online=is_online)
+        def update_or_create_status():
+            user_status, _ = UserStatus.objects.get_or_create(user_id=user_id)
+            user_status.is_online = is_online
+            user_status.save()
 
-        await update_status()
+        await update_or_create_status()
