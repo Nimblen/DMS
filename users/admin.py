@@ -5,7 +5,16 @@ from users.models import RoleRequest, User
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ("username", "email", "first_name", "last_name", "role", "is_staff", "avatar_display", "status_display")
+    list_display = (
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "role",
+        "is_staff",
+        "avatar_display",
+        "status_display",
+    )
     list_filter = ("role", "is_staff", "is_superuser", "is_active", "groups")
     search_fields = ("username", "email", "first_name", "last_name")
     ordering = ("username",)
@@ -26,7 +35,7 @@ class CustomUserAdmin(UserAdmin):
                 )
             },
         ),
-        ("Важные даты", {"fields": ("last_login", "date_joined")}),
+        ("Важные даты", {"fields": ("last_login", "date_joined", "is_online")}),
     )
 
     add_fieldsets = (
@@ -61,7 +70,7 @@ class CustomUserAdmin(UserAdmin):
         """
         Отображение статуса пользователя (онлайн/офлайн).
         """
-        if hasattr(obj, 'status') and obj.status.is_online:
+        if obj.is_online:
             return format_html('<span style="color: green; font-weight: bold;">Онлайн</span>')
         return format_html('<span style="color: gray; font-weight: bold;">Офлайн</span>')
 
@@ -76,7 +85,7 @@ class RoleRequestAdmin(admin.ModelAdmin):
     list_display = ("user", "requested_role", "is_approved", "created_at")
     list_filter = ("requested_role", "is_approved")
     actions = ["approve_requests", "reject_requests"]
-    list_editable = ["is_approved"] 
+    list_editable = ["is_approved"]
 
     def approve_requests(self, request, queryset):
         for role_request in queryset:

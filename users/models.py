@@ -13,8 +13,13 @@ class User(AbstractUser):
         (ROLE_ASSISTANT, "Помощник"),
     ]
 
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=ROLE_EMPLOYEE)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=ROLE_EMPLOYEE, db_index=True)
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    is_online = models.BooleanField(default=False, db_index=True)
+    date_joined = models.DateTimeField(auto_now_add=True, db_index=True)
+    email = models.EmailField(db_index=True)
+    username = models.CharField(max_length=150, unique=True, db_index=True)
+
 
     def is_employee(self):
         return self.role == self.ROLE_EMPLOYEE
@@ -27,10 +32,10 @@ class User(AbstractUser):
 
 
 class RoleRequest(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    requested_role = models.CharField(max_length=10, choices=User.ROLE_CHOICES)
-    is_approved = models.BooleanField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    requested_role = models.CharField(max_length=10, choices=User.ROLE_CHOICES, db_index=True)
+    is_approved = models.BooleanField(null=True, blank=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     def __str__(self):
         return (
@@ -38,10 +43,3 @@ class RoleRequest(models.Model):
         )
 
 
-class UserStatus(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="status")
-    is_online = models.BooleanField(default=False)
-    last_seen = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.user.username} - {'Онлайн' if self.is_online else 'Офлайн'}"

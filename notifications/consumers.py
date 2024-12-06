@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
@@ -9,36 +10,38 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         """
         Called when a websocket connection is initiated.
-        Adds the user to a group for receiving notifications.
+        Updates the user's online status in the database.
         """
-        self.group_name = f'notifications_{self.scope["user"].id}'
+        self.user_id = self.scope["user"].id
 
         if self.scope["user"].is_anonymous:
-            # Close the connection if the user is anonymous
             await self.close()
         else:
-            # Add the user to the group
+            # Add user to WebSocket group
             await self.channel_layer.group_add(
-                self.group_name,
+                "notifications",
                 self.channel_name
             )
             await self.accept()
-            await self.update_user_status_in_db(self.scope["user"].id, True)
-            await self.send_user_status(self.scope["user"].id, True)
+
+            # Update user status in database
+            await self.update_user_status(self.user_id, is_online=True)
+            await self.send_user_status(self.user_id, is_online=True)
 
     async def disconnect(self, close_code):
         """
         Called when the websocket connection is closed.
-        Removes the user from the notifications group.
+        Updates the user's online status in the database.
         """
-        # Remove user from the group
+        # Remove user from WebSocket group
         await self.channel_layer.group_discard(
-            self.group_name,
+            "notifications",
             self.channel_name
         )
-        # Update user status and notify others
-        await self.update_user_status_in_db(self.scope["user"].id, False)
-        await self.send_user_status(self.scope["user"].id, False)
+
+        # Update user status in database
+        await self.update_user_status(self.user_id, is_online=False)
+        await self.send_user_status(self.user_id, is_online=False)
 
     async def send_notification(self, event):
         """
@@ -47,10 +50,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         Args:
             event (dict): The event data containing the message to send.
         """
-        message = event['message']
+        message = event["message"]
         await self.send(text_data=json.dumps({
-            'message': message,
-            'type': 'send_notification',
+            "message": message,
+            "type": "send_notification",
         }))
 
     async def send_user_status(self, user_id, is_online):
@@ -62,13 +65,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             is_online (bool): Whether the user is online.
         """
         await self.send(text_data=json.dumps({
-            'user_id': user_id,
-            'is_online': is_online,
-            'type': 'user_status',
+            "user_id": user_id,
+            "is_online": is_online,
+            "type": "user_status",
         }))
 
     @staticmethod
-    async def update_user_status_in_db(user_id, is_online):
+    async def update_user_status(user_id, is_online):
         """
         Updates the user's online status in the database.
 
@@ -76,13 +79,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             user_id (int): The ID of the user.
             is_online (bool): Whether the user is online.
         """
-        from users.models import UserStatus  # Avoid circular imports
+        from users.models import User
         from asgiref.sync import sync_to_async
 
         @sync_to_async
-        def update_or_create_status():
-            user_status, _ = UserStatus.objects.get_or_create(user_id=user_id)
-            user_status.is_online = is_online
-            user_status.save()
+        def update_status():
+            user = User.objects.get(id=user_id)
+            user.is_online = is_online
+            user.save(update_fields=["is_online"])
 
-        await update_or_create_status()
+        await update_status()

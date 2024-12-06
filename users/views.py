@@ -86,10 +86,6 @@ class RoleRequestCreateView(LoginRequiredMixin, CreateView):
 
 
 class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-    """
-    View for listing users.
-    """
-
     model = User
     template_name = "users/user_list.html"
     context_object_name = "users"
@@ -98,7 +94,7 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def test_func(self):
         """
-        method to check if the user is an admin or manager.
+        Проверяет, имеет ли пользователь права на просмотр списка.
         """
         return (
             self.request.user.is_superuser
@@ -107,9 +103,9 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get_queryset(self):
         """
-        method to get the queryset of users.
+        Получение списка пользователей.
         """
-        queryset = super().get_queryset().select_related('status')
+        queryset = super().get_queryset()
         query = self.request.GET.get("q")
         ordering = self.request.GET.get("ordering", "username")
 
@@ -137,11 +133,8 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 
 
-class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    """
-    View for displaying user details.
-    """
 
+class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "users/user_detail.html"
 
     def test_func(self):
@@ -151,21 +144,20 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return (
             self.request.user.is_staff
             or self.request.user.is_manager
-            or self.request.user.pk == self.kwargs.get("pk")
+            or self.request.user.pk == self.kwargs.get("pk") 
         )
 
     def get_context_data(self, **kwargs):
         """
-        Добавляет в контекст информацию о пользователе.
+        Добавляет информацию о пользователе в контекст.
         """
         context = super().get_context_data(**kwargs)
-        user_id = self.kwargs.get("pk")  
-
+        user_id = self.kwargs.get("pk")
 
         try:
-            user = User.objects.select_related("status").get(pk=user_id)
+            user = User.objects.get(pk=user_id)
             context["user_detail"] = user
-            context["is_online"] = getattr(user.status, "is_online", False)
+            context["is_online"] = user.is_online
         except User.DoesNotExist:
             context["user_detail"] = None
             context["is_online"] = False
